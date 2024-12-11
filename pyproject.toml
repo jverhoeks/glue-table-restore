@@ -1,0 +1,9 @@
+[project]
+name = "glue-table-restore"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "awswrangler>=3.10.1",
+]
