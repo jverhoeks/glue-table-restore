@@ -110,8 +110,22 @@ class GlueTableCreator:
             # Get first chunk to read schema
             df = next(df_iter)
             
-            # Remove partition columns from the main schema
-            columns_types = {col: str(dtype) for col, dtype in df.dtypes.items() 
+            # Map pandas dtypes to Hive/Glue compatible types
+            def map_dtype(dtype):
+                dtype_str = str(dtype)
+                if dtype_str.startswith('int') or dtype_str == 'Int64':
+                    return 'bigint'
+                elif dtype_str.startswith('float'):
+                    return 'double'
+                elif dtype_str == 'bool':
+                    return 'boolean'
+                elif dtype_str.startswith('datetime'):
+                    return 'timestamp'
+                else:
+                    return 'string'
+            
+            # Remove partition columns from the main schema and map types
+            columns_types = {col: map_dtype(dtype) for col, dtype in df.dtypes.items() 
                            if col not in partition_cols}
             
             # Create partition types dict
